@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">113021499146-ue16ihdikjhskksi7iora6eu98b7h0lk.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">113021499146</string>
+    <string name="google_api_key" translatable="false">AIzaSyC83fpLDPztSUY1Sol0X4WIIi4sp0Tp7Oc</string>
+    <string name="google_app_id" translatable="false">1:113021499146:android:87a36b83f593210401acf3</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC83fpLDPztSUY1Sol0X4WIIi4sp0Tp7Oc</string>
+    <string name="google_storage_bucket" translatable="false">first-digi.appspot.com</string>
+    <string name="project_id" translatable="false">first-digi</string>
+</resources>
