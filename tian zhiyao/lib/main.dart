@@ -1,200 +1,89 @@
+import 'package:digi/map.dart';
+import 'package:digi/posting.dart';
+// import 'package:digi/message.dart/';
 import 'package:flutter/material.dart';
-import 'package:flutter_gmaps/directions_model.dart';
-import 'package:flutter_gmaps/directions_repository.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(MyApp());
+import 'notification.dart';
+import 'homepage.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Google Maps',
+    return new MaterialApp(
+      title: 'Digi',
+      theme: new ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: new MyHomePage(),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.white,
-      ),
-      home: MapScreen(),
     );
   }
 }
 
-class MapScreen extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
   @override
-  _MapScreenState createState() => _MapScreenState();
+  _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MapScreenState extends State<MapScreen> {
-  static const _initialCameraPosition = CameraPosition(
-    target: LatLng(-27.467, 153.017),
-    zoom: 11.5,
-  );
+class _MyHomePageState extends State<MyHomePage> {
+  var selectedPageIndex = 0;
 
-  GoogleMapController _googleMapController;
-  Marker _origin;
-  Marker _destination;
-  Directions _info;
-
-  @override
-  void dispose() {
-    _googleMapController.dispose();
-    super.dispose();
-  }
+  var pages = [
+    // MainPage(),
+    HomePage(),
+    // Notifications(),
+    Map(),
+    // Message(),
+    Posting(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text('DIGI Auth'),
-        actions: [
-          if (_origin != null)
-            TextButton(
-              onPressed: () => _googleMapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    target: _origin.position,
-                    zoom: 14.5,
-                    tilt: 50.0,
-                  ),
-                ),
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.green,
-                textStyle: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              child: const Text('ORIGIN'),
+    return new Scaffold(
+      body: pages[selectedPageIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.grey[300],
+        items: [
+          BottomNavigationBarItem(
+            // ignore: deprecated_member_use
+            title: Text("homepage"),
+            icon: Icon(
+              FontAwesomeIcons.home,
+              color: selectedPageIndex == 0 ? Colors.green : Colors.blueGrey,
             ),
-          if (_destination != null)
-            TextButton(
-              onPressed: () => _googleMapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    target: _destination.position,
-                    zoom: 14.5,
-                    tilt: 50.0,
-                  ),
-                ),
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.blue,
-                textStyle: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              child: const Text('DEST'),
-            )
-        ],
-      ),
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          GoogleMap(
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-            initialCameraPosition: _initialCameraPosition,
-            onMapCreated: (controller) => _googleMapController = controller,
-            markers: {
-              if (_origin != null) _origin,
-              if (_destination != null) _destination
-            },
-            polylines: {
-              if (_info != null)
-                Polyline(
-                  polylineId: const PolylineId('overview_polyline'),
-                  color: Colors.red,
-                  width: 5,
-                  points: _info.polylinePoints
-                      .map((e) => LatLng(e.latitude, e.longitude))
-                      .toList(),
-                ),
-            },
-            onLongPress: _addMarker,
           ),
-          if (_info != null)
-            Positioned(
-              top: 20.0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 6.0,
-                  horizontal: 12.0,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.yellowAccent,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(0, 2),
-                      blurRadius: 6.0,
-                    )
-                  ],
-                ),
-                child: Text(
-                  '${_info.totalDistance}, ${_info.totalDuration}',
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+          BottomNavigationBarItem(
+              // ignore: deprecated_member_use
+              title: Text("map"),
+              icon: Icon(
+                FontAwesomeIcons.mapMarkedAlt,
+                color: selectedPageIndex == 1 ? Colors.green : Colors.blueGrey,
+              )),
+          BottomNavigationBarItem(
+            // ignore: deprecated_member_use
+            title: Text("post"),
+            icon: Icon(
+              FontAwesomeIcons.plusCircle,
+              color: selectedPageIndex == 2 ? Colors.green : Colors.blueGrey,
             ),
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.black,
-        onPressed: () => _googleMapController.animateCamera(
-          _info != null
-              ? CameraUpdate.newLatLngBounds(_info.bounds, 100.0)
-              : CameraUpdate.newCameraPosition(_initialCameraPosition),
-        ),
-        child: const Icon(Icons.center_focus_strong),
+        onTap: (index) {
+          setState(() {
+            selectedPageIndex = index;
+          });
+        },
+        currentIndex: selectedPageIndex,
       ),
     );
-  }
-
-  void _addMarker(LatLng pos) async {
-    if (_origin == null) {
-      // Origin is not set OR Origin/Destination are both set
-      // Set origin
-      setState(() {
-        _origin = Marker(
-          markerId: const MarkerId('origin'),
-          infoWindow: const InfoWindow(
-              title: 'Brisbane', snippet: 'Brief introduction of Brisbane'),
-          icon:
-          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          position: pos,
-        );
-        // Reset destination
-        _destination = null;
-
-        // Reset info
-        _info = null;
-      });
-    } else if (_origin != null && _destination != null) {
-      setState(() {
-        _origin = null;
-        _destination = null;
-        _info = null;
-      });
-    } else {
-      // Origin is already set
-      // Set destination
-      setState(() {
-        _destination = Marker(
-          markerId: const MarkerId('destination'),
-          infoWindow: const InfoWindow(title: 'Destination', snippet: 'brief introduction of destination'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          position: pos,
-        );
-      });
-
-      // Get directions
-      final directions = await DirectionsRepository()
-          .getDirections(origin: _origin.position, destination: pos);
-      setState(() => _info = directions);
-    }
   }
 }

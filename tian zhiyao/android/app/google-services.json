@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "113021499146",
+    "project_id": "first-digi",
+    "storage_bucket": "first-digi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113021499146:android:87a36b83f593210401acf3",
+        "android_client_info": {
+          "package_name": "com.example.digi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113021499146-ue16ihdikjhskksi7iora6eu98b7h0lk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC83fpLDPztSUY1Sol0X4WIIi4sp0Tp7Oc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113021499146-ue16ihdikjhskksi7iora6eu98b7h0lk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
